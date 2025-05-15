@@ -17,4 +17,6 @@ public interface IBookUseCase {
     public void deleteBook(Long bookId);
 
     public List findBookByStatus(BookStatus status);
+
+    public List findAllBooks();
 }

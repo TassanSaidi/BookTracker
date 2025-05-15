@@ -4,12 +4,12 @@ import com.tassan.book.tracker.persistance.domain.Book;
 import com.tassan.book.tracker.persistance.domain.enums.BookStatus;
 import com.tassan.book.tracker.persistance.repository.IBookRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
 
-@Service
+@Component
 @RequiredArgsConstructor
 public class BookPersistenceService {
 
@@ -36,12 +36,16 @@ public class BookPersistenceService {
         bookRepository.deleteById(bookId);
     }
 
-    public Optional<Book> findById(Long id){
+    public Optional<Book> findById(Long id) {
         return bookRepository.findById(id);
     }
 
-    public List<Book> findByBookStatus(BookStatus bookStatus){
+    public List<Book> findByBookStatus(BookStatus bookStatus) {
         return bookRepository.findByBookStatus(bookStatus);
+    }
+
+    public List<Book> findAllBooks(){
+        return  bookRepository.findAll();
     }
 
 }

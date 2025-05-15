@@ -41,7 +41,12 @@ public class BookService implements IBookUseCase {
     }
 
     @Override
-    public List findBookByStatus(BookStatus status) {
+    public List<Book> findBookByStatus(BookStatus status) {
         return bookPersistenceService.findByBookStatus(status);
+    }
+
+    @Override
+    public List<Book> findAllBooks() {
+        return bookPersistenceService.findAllBooks();
     }
 }
