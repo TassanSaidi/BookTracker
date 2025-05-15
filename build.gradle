@@ -1,0 +1,59 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.4.5'
+	id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'com.tassan.rest'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	// Spring Web (for REST controllers)
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+
+	// Spring Data JPA (for ORM/database access)
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+	// PostgreSQL driver
+	runtimeOnly 'org.postgresql:postgresql'
+
+	// Validation (for DTO validation with annotations like @NotNull)
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+	// Lombok (reduces boilerplate)
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+
+	// MapStruct (for DTO/entity mapping)
+	implementation 'org.mapstruct:mapstruct:1.5.5.Final'
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
+
+	// Devtools (optional but helpful for auto-restart in dev)
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+	// Testcontainers (for integration tests with real PostgreSQL in Docker)
+	testImplementation 'org.testcontainers:junit-jupiter'
+	testImplementation 'org.testcontainers:postgresql'
+
+	// Spring Boot Test
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
