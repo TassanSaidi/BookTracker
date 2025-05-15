@@ -19,4 +19,6 @@ public interface IBookUseCase {
     public List findBookByStatus(BookStatus status);
 
     public List findAllBooks();
+
+
 }

@@ -2,7 +2,9 @@ package com.tassan.book.tracker.controller;
 
 
 import com.tassan.book.tracker.controller.dto.BookDTO;
+import com.tassan.book.tracker.controller.dto.FailedBook;
 import com.tassan.book.tracker.controller.mapper.BookMapper;
+import com.tassan.book.tracker.persistance.domain.Book;
 import com.tassan.book.tracker.persistance.domain.enums.BookStatus;
 import com.tassan.book.tracker.service.BookService;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -49,9 +52,9 @@ public class BookController {
     }
 
     @GetMapping("/status/{bookStatus}")
-    public ResponseEntity<List<BookDTO>> getBooksByStatus(@PathVariable(name = "bookStatus") BookStatus bookStatus) {
+    public ResponseEntity<List<BookDTO>> getBooksByStatus(@PathVariable(name = "bookStatus") String bookStatus) {
         try {
-            List<BookDTO> books = bookService.findBookByStatus(bookStatus).stream().map(BookMapper::toDTO).collect(Collectors.toList());
+            List<BookDTO> books = bookService.findBookByStatus(BookStatus.valueOf(bookStatus)).stream().map(BookMapper::toDTO).collect(Collectors.toList());
             return ResponseEntity.ok(books);
         } catch (Exception e) {
             log.error("Error retrieving books");
@@ -83,5 +86,27 @@ public class BookController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+    @PostMapping
+    public ResponseEntity<SaveBooksResponse> saveBooks(@RequestBody List<BookDTO> bookDTOList) {
+        List<BookDTO> saved = new ArrayList<>();
+        List<FailedBook> failed = new ArrayList<>();
+
+        for (BookDTO dto : bookDTOList) {
+            try {
+                Book savedBook = bookService.createBook(BookMapper.fromDTO(dto,null));
+                saved.add(BookMapper.toDTO(savedBook));
+            } catch (Exception ex) {
+                failed.add(new FailedBook(dto, ex.getMessage()));
+            }
+        }
+
+        SaveBooksResponse response = new SaveBooksResponse();
+        response.setSaved(saved);
+        response.setFailed(failed);
+
+        return ResponseEntity.ok(response);
+    }
+
 
 }
