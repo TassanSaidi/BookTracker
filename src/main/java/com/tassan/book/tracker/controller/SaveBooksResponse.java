@@ -12,7 +12,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SaveBooksResponse {
 
-
         private List<BookDTO> saved;
         private List<FailedBook> failed;
 }

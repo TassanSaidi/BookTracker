@@ -18,6 +18,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.*;
+
 
 @RequestMapping("/api/books")
 @RestController
@@ -31,7 +33,7 @@ public class BookController {
     @GetMapping
     public ResponseEntity<List<BookDTO>> getAllBooks() {
         try {
-            List<BookDTO> books = bookService.findAllBooks().stream().map(BookMapper::toDTO).collect(Collectors.toList());
+            List<BookDTO> books = bookService.findAllBooks().stream().map(BookMapper::toDTO).toList();
             return ResponseEntity.ok(books);
         } catch (Exception e) {
             log.error("Error retrieving books");
@@ -43,7 +45,7 @@ public class BookController {
     @GetMapping("/genre/{genre}")
     public ResponseEntity<List<BookDTO>> getBooksByGenre(@PathVariable(name = "genre") String genre) {
         try {
-            List<BookDTO> books = bookService.findByGenre(genre).stream().map(BookMapper::toDTO).collect(Collectors.toList());
+            List<BookDTO> books = bookService.findByGenre(genre).stream().map(BookMapper::toDTO).toList();
             return ResponseEntity.ok(books);
         } catch (Exception e) {
             log.error("Error retrieving books");
@@ -54,7 +56,7 @@ public class BookController {
     @GetMapping("/status/{bookStatus}")
     public ResponseEntity<List<BookDTO>> getBooksByStatus(@PathVariable(name = "bookStatus") String bookStatus) {
         try {
-            List<BookDTO> books = bookService.findBookByStatus(BookStatus.valueOf(bookStatus)).stream().map(BookMapper::toDTO).collect(Collectors.toList());
+            List<BookDTO> books = bookService.findBookByStatus(BookStatus.valueOf(bookStatus)).stream().map(BookMapper::toDTO).toList();
             return ResponseEntity.ok(books);
         } catch (Exception e) {
             log.error("Error retrieving books");
@@ -80,7 +82,7 @@ public class BookController {
             return bookService.findBookById(id).map(book -> ResponseEntity.ok(BookMapper.toDTO(book))).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
 
         } catch (NumberFormatException e) {
-            return ResponseEntity.badRequest().build(); // Invalid ID format
+            return ResponseEntity.badRequest().build();
         } catch (Exception e) {
             log.error("Failed to retrieve book with id {}", bookId, e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -94,7 +96,7 @@ public class BookController {
 
         for (BookDTO dto : bookDTOList) {
             try {
-                Book savedBook = bookService.createBook(BookMapper.fromDTO(dto,null));
+                Book savedBook = bookService.createBook(BookMapper.fromDTO(dto, null));
                 saved.add(BookMapper.toDTO(savedBook));
             } catch (Exception ex) {
                 failed.add(new FailedBook(dto, ex.getMessage()));
